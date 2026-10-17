@@ -5,47 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Experimento de Galvani - Bioelectricidad</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+    body {
       background-color: #0f141c;
       color: #fff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
     }
+    /* Estructura en dos columnas visibles */
     .main-container {
       display: flex;
+      flex-direction: row; /* Fuerza a que estén lado a lado */
       flex: 1;
+      width: 100%;
       height: calc(100vh - 70px);
+      overflow: hidden;
     }
     .canvas-container {
       flex: 1;
-      position: relative;
       height: 100%;
+      position: relative;
+      background: linear-gradient(180deg, #1c2330 0%, #0f1219 100%);
     }
     canvas {
       width: 100%;
       height: 100%;
       display: block;
-      background: linear-gradient(180deg, #1c2330 0%, #0f1219 100%);
     }
+    /* Barra lateral siempre visible */
     .sidebar {
-      width: 300px;
+      width: 320px;
+      min-width: 320px;
       background-color: #0f141c;
       border-left: 2px solid #324155;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      z-index: 10;
+      gap: 20px;
       overflow-y: auto;
+      z-index: 10;
     }
     .control-panel {
       height: 70px;
+      min-height: 70px;
       background-color: #0a0e14;
       border-top: 2px solid #324155;
       display: flex;
@@ -55,7 +65,7 @@
       z-index: 10;
     }
     .btn {
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
@@ -65,14 +75,27 @@
     .btn-descarga { background-color: #ff9800; color: #0f172a; border-color: #ffc864; }
     .btn-toggle { background-color: #00e5ff; color: #0f172a; border-color: #b4ffff; }
     .btn-active { background-color: #00e676 !important; }
-    label { font-size: 13px; color: #b4c3d7; display: block; margin-bottom: 5px; }
+    
+    .param-group {
+      background-color: #1a2230;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #2d3b50;
+    }
+    label {
+      font-size: 13px;
+      color: #b4c3d7;
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
     select, input[type="range"] {
       width: 100%;
-      background: #1e293b;
+      background: #0f172a;
       color: #fff;
       border: 1px solid #475569;
-      padding: 6px;
-      border-radius: 4px;
+      padding: 8px;
+      border-radius: 6px;
       cursor: pointer;
     }
   </style>
@@ -85,9 +108,9 @@
     </div>
     
     <div class="sidebar">
-      <h3 style="margin-top:0;">⚙️ PARÁMETROS</h3>
+      <h3 style="margin-top:0; color: #00e5ff;">⚙️ PARÁMETROS</h3>
       
-      <div>
+      <div class="param-group">
         <label for="comboMetales">Par Bimetálico:</label>
         <select id="comboMetales">
           <option value="0">Cobre - Zinc (~0.76 V)</option>
@@ -97,18 +120,18 @@
         </select>
       </div>
 
-      <div>
-        <label for="sliderSensibilidad">Sensibilidad Nerviosa: <span id="valSensibilidad">100%</span></label>
+      <div class="param-group">
+        <label for="sliderSensibilidad">Sensibilidad Nerviosa: <span id="valSensibilidad" style="color:#00e5ff;">100%</span></label>
         <input type="range" id="sliderSensibilidad" min="50" max="200" value="100">
       </div>
 
-      <div>
-        <label for="sliderFuerza">Fuerza Muscular (Ángulo): <span id="valFuerza">50°</span></label>
+      <div class="param-group">
+        <label for="sliderFuerza">Fuerza Muscular: <span id="valFuerza" style="color:#00e5ff;">50°</span></label>
         <input type="range" id="sliderFuerza" min="20" max="80" value="50">
       </div>
 
-      <div>
-        <label for="sliderRelajacion">Velocidad Relajación: <span id="valRelajacion">8</span></label>
+      <div class="param-group">
+        <label for="sliderRelajacion">Velocidad Relajación: <span id="valRelajacion" style="color:#00e5ff;">8</span></label>
         <input type="range" id="sliderRelajacion" min="2" max="20" value="8">
       </div>
     </div>
