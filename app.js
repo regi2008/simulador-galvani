@@ -55,7 +55,6 @@ comboMetales.addEventListener('change', (e) => {
   if (enContacto) estimular();
 });
 
-// Listener directo para actualizar textos al deslizar
 function sincronizarDeslizadores() {
   if (sliderSensibilidad && valSensibilidad) {
     sensibilidadNervio = parseFloat(sliderSensibilidad.value) / 100;
@@ -63,7 +62,7 @@ function sincronizarDeslizadores() {
   }
   if (sliderFuerza && valFuerza) {
     fuerzaContraccion = parseFloat(sliderFuerza.value);
-    valFuerza.textContent = sliderFuerza.value + "°";
+    valSensibilidad.textContent = sliderFuerza.value + "°";
   }
   if (sliderRelajacion && valRelajacion) {
     velocidadRelajacion = parseFloat(sliderRelajacion.value) / 100;
@@ -101,6 +100,7 @@ function render() {
 
   // 1. Encabezado
   ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "left";
   ctx.font = "bold 18px Segoe UI";
   ctx.fillText("EXPERIMENTO DE GALVANI: BIOELECTRICIDAD", 25, 35);
 
@@ -108,7 +108,7 @@ function render() {
   ctx.font = "12px Segoe UI";
   ctx.fillText("Modifique los parámetros para observar la variación biológica.", 25, 55);
 
-  // 2. Galvanómetro (Ubicación fija arriba a la derecha)
+  // 2. Galvanómetro
   const gx = canvas.width - 220, gy = 20;
   ctx.fillStyle = "#28190f";
   ctx.beginPath();
@@ -144,7 +144,7 @@ function render() {
   ctx.font = "bold 12px Monospaced";
   ctx.fillText(`${voltajeActual.toFixed(2)} V`, gx + 72, gy + 95);
 
-  // 3. Soporte Metálico
+  // 3. Soporte Metálico Principal
   const xCentro = canvas.width / 2;
   ctx.fillStyle = "#505f73";
   ctx.fillRect(xCentro - 70, 70, 140, 8);
@@ -155,12 +155,12 @@ function render() {
   ctx.lineTo(xCentro, 130);
   ctx.stroke();
 
-  // 4. Arco Bimetálico con etiquetas alejadas del centro
+  // 4. Arco Bimetálico con etiquetas muy separadas
   const xArco = xCentro - 120;
   ctx.lineWidth = 7;
   ctx.lineCap = "round";
 
-  // Electrodo Cobre
+  // Electrodo Metal 1 (Cobre/Plata/etc.) - Alineado a la izquierda
   ctx.strokeStyle = colorMetal1;
   ctx.beginPath();
   ctx.arc(xArco + 60, 200, 60, Math.PI, Math.PI * 1.5);
@@ -168,22 +168,22 @@ function render() {
   
   ctx.fillStyle = "#ffffff";
   ctx.font = "bold 12px Segoe UI";
-  ctx.textAlign = "right";
-  ctx.fillText(nombreMetal1, xArco - 10, 210);
+  ctx.textAlign = "right"; // Alinea hacia afuera
+  ctx.fillText(nombreMetal1, xCentro - 75, 230);
 
-  // Electrodo Zinc
+  // Electrodo Metal 2 (Zinc/Aluminio/etc.) - Alineado hacia la derecha lejos de la pata
   ctx.strokeStyle = colorMetal2;
   ctx.beginPath();
   ctx.arc(xArco + 60, 200, 60, Math.PI * 1.5, 0);
   ctx.stroke();
   
-  ctx.textAlign = "left";
-  ctx.fillText(nombreMetal2, xArco + 135, 210);
+  ctx.textAlign = "left"; // Alinea hacia afuera a la derecha
+  ctx.fillText(nombreMetal2, xCentro + 75, 230);
 
-  // 5. Anatomía
+  // 5. Anatomía de la Rana
   const yCadera = 130;
 
-  // Nervio Ciático
+  // Nervio Ciático (Etiqueta corrida hacia la derecha de la cuerda)
   ctx.strokeStyle = "#fde047";
   ctx.lineWidth = 3;
   ctx.beginPath();
@@ -192,8 +192,9 @@ function render() {
   ctx.stroke();
 
   ctx.fillStyle = "#fef08a";
-  ctx.font = "italic 11px Segoe UI";
-  ctx.fillText("Nervio Ciático", xCentro + 12, yCadera + 25);
+  ctx.font = "italic 12px Segoe UI";
+  ctx.textAlign = "left";
+  ctx.fillText("Nervio Ciático", xCentro + 18, yCadera + 18);
 
   // Muslo Femoral
   ctx.fillStyle = "#548a37";
@@ -254,6 +255,7 @@ function render() {
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "bold 11px Segoe UI";
+  ctx.textAlign = "left";
   if (enContraccion) {
     ctx.fillText(`ESTADO: Contracción (${Math.abs(anguloPierna).toFixed(1)}°)`, 55, canvas.height - 27);
   } else {
