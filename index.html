@@ -20,10 +20,9 @@
       width: 100vw;
       overflow: hidden;
     }
-    /* Estructura en dos columnas visibles */
     .main-container {
       display: flex;
-      flex-direction: row; /* Fuerza a que estén lado a lado */
+      flex-direction: row;
       flex: 1;
       width: 100%;
       height: calc(100vh - 70px);
@@ -40,7 +39,6 @@
       height: 100%;
       display: block;
     }
-    /* Barra lateral siempre visible */
     .sidebar {
       width: 320px;
       min-width: 320px;
@@ -49,7 +47,7 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       overflow-y: auto;
       z-index: 10;
     }
@@ -78,24 +76,32 @@
     
     .param-group {
       background-color: #1a2230;
-      padding: 12px;
+      padding: 14px;
       border-radius: 8px;
       border: 1px solid #2d3b50;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     label {
       font-size: 13px;
       color: #b4c3d7;
-      display: block;
-      margin-bottom: 8px;
       font-weight: 600;
+      display: flex;
+      justify-content: space-between;
     }
-    select, input[type="range"] {
+    select {
       width: 100%;
       background: #0f172a;
       color: #fff;
       border: 1px solid #475569;
       padding: 8px;
       border-radius: 6px;
+      cursor: pointer;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #00e5ff;
       cursor: pointer;
     }
   </style>
