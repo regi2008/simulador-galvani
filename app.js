@@ -11,7 +11,7 @@ let nombreMetal2 = "Zinc (Zn)";
 let colorMetal1 = "#e67e22";
 let colorMetal2 = "#a0afbe";
 
-// Estado
+// Estado de la animación
 let anguloPierna = 0.0;
 let anguloObjetivo = 0.0;
 let enContacto = false;
@@ -19,12 +19,15 @@ let chispaActiva = false;
 let voltajeActual = 0.0;
 
 function resizeCanvas() {
-  canvas.width = canvas.parentElement.clientWidth;
-  canvas.height = canvas.parentElement.clientHeight;
+  if (canvas.parentElement) {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
 }
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+setTimeout(resizeCanvas, 100);
 
+// Captura de elementos
 const btnDescarga = document.getElementById('btnDescarga');
 const btnMantener = document.getElementById('btnMantener');
 const comboMetales = document.getElementById('comboMetales');
@@ -32,7 +35,13 @@ const sliderSensibilidad = document.getElementById('sliderSensibilidad');
 const sliderFuerza = document.getElementById('sliderFuerza');
 const sliderRelajacion = document.getElementById('sliderRelajacion');
 
+const valSensibilidad = document.getElementById('valSensibilidad');
+const valFuerza = document.getElementById('valFuerza');
+const valRelajacion = document.getElementById('valRelajacion');
+
+// Eventos
 btnDescarga.addEventListener('click', estimular);
+
 btnMantener.addEventListener('click', () => {
   enContacto = !enContacto;
   btnMantener.classList.toggle('btn-active', enContacto);
@@ -49,9 +58,22 @@ comboMetales.addEventListener('change', (e) => {
   if (enContacto) estimular();
 });
 
-sliderSensibilidad.addEventListener('input', e => sensibilidadNervio = e.target.value / 100);
-sliderFuerza.addEventListener('input', e => fuerzaContraccion = parseFloat(e.target.value));
-sliderRelajacion.addEventListener('input', e => velocidadRelajacion = e.target.value / 100);
+sliderSensibilidad.addEventListener('input', (e) => {
+  sensibilidadNervio = parseFloat(e.target.value) / 100;
+  if (valSensibilidad) valSensibilidad.textContent = `${e.target.value}%`;
+  if (enContacto) estimular();
+});
+
+sliderFuerza.addEventListener('input', (e) => {
+  fuerzaContraccion = parseFloat(e.target.value);
+  if (valFuerza) valFuerza.textContent = `${e.target.value}°`;
+  if (enContacto) estimular();
+});
+
+sliderRelajacion.addEventListener('input', (e) => {
+  velocidadRelajacion = parseFloat(e.target.value) / 100;
+  if (valRelajacion) valRelajacion.textContent = e.target.value;
+});
 
 function estimular() {
   const respuesta = (voltajeBase / 0.76) * sensibilidadNervio;
@@ -76,165 +98,151 @@ function loop() {
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 1. Título e instrucciones
+  // Encabezado
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 20px Segoe UI";
-  ctx.fillText("EXPERIMENTO DE GALVANI: BIOELECTRICIDAD", 30, 40);
+  ctx.font = "bold 18px Segoe UI";
+  ctx.fillText("EXPERIMENTO DE GALVANI: BIOELECTRICIDAD", 25, 35);
 
-  ctx.fillStyle = "#b4c3d7";
-  ctx.font = "12px Segoe UI";
-  ctx.fillText("Modifique los parámetros para observar la variación biológica.", 30, 60);
-
-  // 2. Galvanómetro Vintage estilizado
-  const gx = canvas.width - 240, gy = 30;
+  // Galvanómetro
+  const gx = canvas.width - 230, gy = 20;
   ctx.fillStyle = "#28190f";
   ctx.beginPath();
-  ctx.roundRect(gx, gy, 210, 135, 12);
+  ctx.roundRect(gx, gy, 200, 125, 10);
   ctx.fill();
 
   ctx.fillStyle = "#f8fafc";
   ctx.beginPath();
-  ctx.roundRect(gx + 10, gy + 10, 190, 115, 8);
+  ctx.roundRect(gx + 8, gy + 8, 184, 109, 6);
   ctx.fill();
 
   ctx.fillStyle = "#0f172a";
-  ctx.font = "bold 11px Segoe UI";
-  ctx.fillText("GALVANÓMETRO (VOLTIOS)", gx + 25, gy + 28);
+  ctx.font = "bold 10px Segoe UI";
+  ctx.fillText("GALVANÓMETRO (VOLTIOS)", gx + 20, gy + 24);
 
   ctx.strokeStyle = "#0f172a";
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(gx + 105, gy + 90, 55, Math.PI * 1.25, Math.PI * 1.75);
+  ctx.arc(gx + 100, gy + 80, 48, Math.PI * 1.25, Math.PI * 1.75);
   ctx.stroke();
 
-  // Aguja del galvanómetro
   const anguloVal = Math.PI * 1.25 + ((voltajeActual / 1.60) * (Math.PI * 0.5));
   ctx.strokeStyle = "#e11d48";
   ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.moveTo(gx + 105, gy + 90);
-  ctx.lineTo(gx + 105 + 50 * Math.cos(anguloVal), gy + 90 + 50 * Math.sin(anguloVal));
+  ctx.moveTo(gx + 100, gy + 80);
+  ctx.lineTo(gx + 100 + 42 * Math.cos(anguloVal), gy + 80 + 42 * Math.sin(anguloVal));
   ctx.stroke();
 
-  // Lectura Digital
   ctx.fillStyle = "#0f172a";
-  ctx.fillRect(gx + 55, gy + 98, 100, 20);
+  ctx.fillRect(gx + 50, gy + 88, 100, 18);
   ctx.fillStyle = "#34d399";
-  ctx.font = "bold 13px Monospaced";
-  ctx.fillText(`${voltajeActual.toFixed(2)} V`, gx + 82, gy + 113);
+  ctx.font = "bold 12px Monospaced";
+  ctx.fillText(`${voltajeActual.toFixed(2)} V`, gx + 75, gy + 101);
 
-  // 3. Soporte Metálico
-  const xCentro = Math.min(380, canvas.width / 2 - 50);
+  // Soporte Metálico
+  const xCentro = Math.min(320, canvas.width / 2 - 40);
   ctx.fillStyle = "#505f73";
-  ctx.fillRect(xCentro - 80, 95, 160, 10);
+  ctx.fillRect(xCentro - 70, 80, 140, 8);
   ctx.strokeStyle = "#a0afbe";
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(xCentro, 105);
-  ctx.lineTo(xCentro, 180);
+  ctx.moveTo(xCentro, 88);
+  ctx.lineTo(xCentro, 150);
   ctx.stroke();
 
-  // 4. Arco Bimetálico (Cobre y Zinc)
-  const xArco = xCentro - 140;
-  ctx.lineWidth = 8;
+  // Arco Bimetálico
+  const xArco = xCentro - 120;
+  ctx.lineWidth = 7;
   ctx.lineCap = "round";
 
-  // Electrodo 1
   ctx.strokeStyle = colorMetal1;
   ctx.beginPath();
-  ctx.arc(xArco + 70, 270, 70, Math.PI, Math.PI * 1.5);
+  ctx.arc(xArco + 60, 230, 60, Math.PI, Math.PI * 1.5);
   ctx.stroke();
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 12px Segoe UI";
-  ctx.fillText(nombreMetal1, xArco - 20, 260);
+  ctx.font = "bold 11px Segoe UI";
+  ctx.fillText(nombreMetal1, xArco - 20, 220);
 
-  // Electrodo 2
   ctx.strokeStyle = colorMetal2;
   ctx.beginPath();
-  ctx.arc(xArco + 70, 270, 70, Math.PI * 1.5, 0);
+  ctx.arc(xArco + 60, 230, 60, Math.PI * 1.5, 0);
   ctx.stroke();
-  ctx.fillText(nombreMetal2, xArco + 150, 260);
+  ctx.fillText(nombreMetal2, xArco + 130, 220);
 
-  // 5. Anatomía de la Rana
-  const yCadera = 180;
+  // Anatomía
+  const yCadera = 150;
 
-  // Nervio Ciático
   ctx.strokeStyle = "#fde047";
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(xCentro, yCadera);
-  ctx.lineTo(xCentro, yCadera + 60);
+  ctx.lineTo(xCentro, yCadera + 50);
   ctx.stroke();
 
   ctx.fillStyle = "#fef08a";
   ctx.font = "italic 11px Segoe UI";
-  ctx.fillText("Nervio Ciático", xCentro + 12, yCadera + 35);
+  ctx.fillText("Nervio Ciático", xCentro + 10, yCadera + 30);
 
-  // Muslo Femoral
   ctx.fillStyle = "#548a37";
   ctx.beginPath();
-  ctx.ellipse(xCentro, yCadera + 95, 18, 42, 0, 0, Math.PI * 2);
+  ctx.ellipse(xCentro, yCadera + 80, 16, 36, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = "#285019";
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // Pantorrilla y Pie Articulado
   ctx.save();
-  ctx.translate(xCentro, yCadera + 135);
+  ctx.translate(xCentro, yCadera + 116);
   ctx.rotate((anguloPierna * Math.PI) / 180);
 
-  // Pantorrilla
   ctx.fillStyle = "#609b3e";
   ctx.beginPath();
-  ctx.ellipse(0, 48, 12, 48, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 40, 10, 40, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
 
-  // Pie
   ctx.fillStyle = "#4b7d32";
   ctx.beginPath();
-  ctx.moveTo(0, 90);
-  ctx.lineTo(35, 120);
-  ctx.lineTo(-15, 120);
+  ctx.moveTo(0, 78);
+  ctx.lineTo(30, 105);
+  ctx.lineTo(-12, 105);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
 
-  // 6. Chispazo Eléctrico
   if (chispaActiva || enContacto) {
     ctx.fillStyle = "rgba(255, 235, 59, 0.5)";
     ctx.beginPath();
-    ctx.arc(xCentro, yCadera + 65, 22, 0, Math.PI * 2);
+    ctx.arc(xCentro, yCadera + 50, 18, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    ctx.arc(xCentro, yCadera + 65, 8, 0, Math.PI * 2);
+    ctx.arc(xCentro, yCadera + 50, 6, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // 7. Monitor de Estado
+  // Monitor de Estado
   ctx.fillStyle = "#0f172a";
   ctx.beginPath();
-  ctx.roundRect(30, canvas.height - 70, 360, 48, 8);
+  ctx.roundRect(25, canvas.height - 55, 320, 40, 6);
   ctx.fill();
   ctx.strokeStyle = "#334155";
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  const enContraccion = Math.abs(anguloPierna) > 12;
+  const enContraccion = Math.abs(anguloPierna) > 10;
   ctx.fillStyle = enContraccion ? "#ff1744" : "#00e676";
   ctx.beginPath();
-  ctx.arc(48, canvas.height - 46, 8, 0, Math.PI * 2);
+  ctx.arc(40, canvas.height - 35, 7, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 12px Segoe UI";
+  ctx.font = "bold 11px Segoe UI";
   if (enContraccion) {
-    ctx.fillText(`ESTADO: Despolarización ( Flexión: ${Math.abs(anguloPierna).toFixed(1)}° )`, 68, canvas.height - 42);
+    ctx.fillText(`ESTADO: Contracción (${Math.abs(anguloPierna).toFixed(1)}°)`, 55, canvas.height - 31);
   } else {
-    ctx.fillText("ESTADO: Reposo (Potencial -70mV)", 68, canvas.height - 42);
+    ctx.fillText("ESTADO: Reposo (-70mV)", 55, canvas.height - 31);
   }
 }
 

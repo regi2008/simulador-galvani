@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Experimento de Galvani - Bioelectricidad</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -22,8 +20,7 @@
     .main-container {
       display: flex;
       flex: 1;
-      position: relative;
-      overflow: hidden;
+      height: calc(100vh - 70px);
     }
     .canvas-container {
       flex: 1;
@@ -37,14 +34,15 @@
       background: linear-gradient(180deg, #1c2330 0%, #0f1219 100%);
     }
     .sidebar {
-      width: 280px;
+      width: 300px;
       background-color: #0f141c;
       border-left: 2px solid #324155;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 18px;
       z-index: 10;
+      overflow-y: auto;
     }
     .control-panel {
       height: 70px;
@@ -64,31 +62,18 @@
       border: 2px solid transparent;
       font-size: 14px;
     }
-    .btn-descarga {
-      background-color: #ff9800;
-      color: #0f172a;
-      border-color: #ffc864;
-    }
-    .btn-toggle {
-      background-color: #00e5ff;
-      color: #0f172a;
-      border-color: #b4ffff;
-    }
-    .btn-active {
-      background-color: #00e676 !important;
-    }
-    label {
-      font-size: 13px;
-      color: #b4c3d7;
-    }
+    .btn-descarga { background-color: #ff9800; color: #0f172a; border-color: #ffc864; }
+    .btn-toggle { background-color: #00e5ff; color: #0f172a; border-color: #b4ffff; }
+    .btn-active { background-color: #00e676 !important; }
+    label { font-size: 13px; color: #b4c3d7; display: block; margin-bottom: 5px; }
     select, input[type="range"] {
       width: 100%;
-      margin-top: 5px;
       background: #1e293b;
       color: #fff;
       border: 1px solid #475569;
       padding: 6px;
       border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -103,7 +88,7 @@
       <h3 style="margin-top:0;">⚙️ PARÁMETROS</h3>
       
       <div>
-        <label>Par Bimetálico:</label>
+        <label for="comboMetales">Par Bimetálico:</label>
         <select id="comboMetales">
           <option value="0">Cobre - Zinc (~0.76 V)</option>
           <option value="1">Plata - Zinc (~1.10 V)</option>
@@ -113,17 +98,17 @@
       </div>
 
       <div>
-        <label>Sensibilidad Nerviosa:</label>
+        <label for="sliderSensibilidad">Sensibilidad Nerviosa: <span id="valSensibilidad">100%</span></label>
         <input type="range" id="sliderSensibilidad" min="50" max="200" value="100">
       </div>
 
       <div>
-        <label>Fuerza Muscular (Ángulo):</label>
+        <label for="sliderFuerza">Fuerza Muscular (Ángulo): <span id="valFuerza">50°</span></label>
         <input type="range" id="sliderFuerza" min="20" max="80" value="50">
       </div>
 
       <div>
-        <label>Velocidad de Relajación:</label>
+        <label for="sliderRelajacion">Velocidad Relajación: <span id="valRelajacion">8</span></label>
         <input type="range" id="sliderRelajacion" min="2" max="20" value="8">
       </div>
     </div>
