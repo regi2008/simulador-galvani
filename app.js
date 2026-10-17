@@ -55,21 +55,28 @@ comboMetales.addEventListener('change', (e) => {
   if (enContacto) estimular();
 });
 
-sliderSensibilidad.addEventListener('input', (e) => {
-  sensibilidadNervio = parseFloat(e.target.value) / 100;
-  if (valSensibilidad) valSensibilidad.textContent = `${e.target.value}%`;
+// Actualización dinámica en vivo para cada deslizador
+function actualizarValoresUI() {
+  if (sliderSensibilidad && valSensibilidad) {
+    sensibilidadNervio = parseFloat(sliderSensibilidad.value) / 100;
+    valSensibilidad.innerText = sliderSensibilidad.value + "%";
+  }
+  if (sliderFuerza && valFuerza) {
+    fuerzaContraccion = parseFloat(sliderFuerza.value);
+    valFuerza.innerText = sliderFuerza.value + "°";
+  }
+  if (sliderRelajacion && valRelajacion) {
+    velocidadRelajacion = parseFloat(sliderRelajacion.value) / 100;
+    valRelajacion.innerText = sliderRelajacion.value;
+  }
   if (enContacto) estimular();
-});
+}
 
-sliderFuerza.addEventListener('input', (e) => {
-  fuerzaContraccion = parseFloat(e.target.value);
-  if (valFuerza) valFuerza.textContent = `${e.target.value}°`;
-  if (enContacto) estimular();
-});
-
-sliderRelajacion.addEventListener('input', (e) => {
-  velocidadRelajacion = parseFloat(e.target.value) / 100;
-  if (valRelajacion) valRelajacion.textContent = e.target.value;
+// Escuchar tanto 'input' como 'change' para máxima compatibilidad
+['input', 'change'].forEach(evento => {
+  if (sliderSensibilidad) sliderSensibilidad.addEventListener(evento, actualizarValoresUI);
+  if (sliderFuerza) sliderFuerza.addEventListener(evento, actualizarValoresUI);
+  if (sliderRelajacion) sliderRelajacion.addEventListener(evento, actualizarValoresUI);
 });
 
 function estimular() {
@@ -100,7 +107,7 @@ function render() {
   ctx.font = "bold 18px Segoe UI";
   ctx.fillText("EXPERIMENTO DE GALVANI: BIOELECTRICIDAD", 25, 35);
 
-  // Galvanómetro (Arriba a la derecha del canvas)
+  // Galvanómetro
   const gx = canvas.width - 220, gy = 20;
   ctx.fillStyle = "#28190f";
   ctx.beginPath();
@@ -219,7 +226,7 @@ function render() {
     ctx.fill();
   }
 
-  // Monitor de Estado (Abajo a la izquierda)
+  // Monitor de Estado
   ctx.fillStyle = "#0f172a";
   ctx.beginPath();
   ctx.roundRect(25, canvas.height - 50, 310, 38, 6);
